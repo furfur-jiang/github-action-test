@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+//react 虚拟 dom 元素，普通 js 对象，描述界面内容
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1 id="1">111</h1>
+let e = React.createElement("h1", {
+  id: "1"
+}, "111");
 
-## Available Scripts
+{
 
-In the project directory, you can run:
+$$
+key: null
+props:
+children: "111"
+id: "1"
+[[Prototype]]: Object
+ref: null
+type: "h1"
+_owner: null
+}
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<h1 id="1">111<p id="2">22</p></h1>
+多个儿子就会变成数组
+React.createElement("h1", {
+id: "1"
+}, "111", /*#__PURE__*/React.createElement("p", {
+id: "2"
+}, "22"));
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+render把虚拟dom变成真实dom，渲染到页面
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+独生子好处：方便取，不需要childern[0]
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+react源码 文本节点无类型标识
+因为一个元素只有一个儿子，儿子还是文本，react进行了优化
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+编译得到React.createElement方法，后在浏览器执行该方法得到虚拟DOM
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+jsx不能内不能有关键字
+for htmlFor  //获取焦点，label和input搭配
+class className
+style 对象
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+key
+没有key会按照索引一一对比，有key根据key对比
+头插时会比较差异，而不是直接删
+key用于map的键，相同会覆盖
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+React元素不可变 ，会不停创建新的元素去渲染，且只会更新必要部分
+react17一起只是规定，现在修改会报错
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+react17之后不再转成React.createElement，
+调用jsxs-transform，用jsx()函数替换React.createElement
+编译器自动引入 import {jsx as _jsx} from 'react/jsx-runtime
+即修改了jsx转换逻辑
+好处：避免耦合，不用引入React
+配置到scripts命令内：DISABLE_NEW_JSX_TRANSFORM=true
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+```json
+{
+  "type":"h1",
+  "props":{
+    "className":"title",
+    "style":{"color":"blue"},
+    "children":{
+      "type":"span",
+      "props":{
+        "children":"hello"
+      },
+    }
+  },
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+replacer替换器
 
-### Making a Progressive Web App
+JSON.stringify(obj,null,1)//空一个
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+null处可以传入一个替换器
 
-### Advanced Configuration
+eg
+a.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![image-20220107115837736](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220107115837736.png)
